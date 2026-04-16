@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>大模型是什么？——文字接龙游戏</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: #0d0d1a;
+      color: #e8e8f0;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── 顶部 Hero ── */
+    .hero {
+      text-align: center;
+      padding: 60px 20px 40px;
+      background: radial-gradient(ellipse at top, #1a1a3e 0%, #0d0d1a 70%);
+      border-bottom: 1px solid #2a2a4a;
+    }
+
+    .hero .badge {
+      display: inline-block;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      padding: 4px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      text-transform: uppercase;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 52px);
+      font-weight: 800;
+      line-height: 1.2;
+      background: linear-gradient(135deg, #a5b4fc, #e879f9, #38bdf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .hero p {
+      font-size: clamp(14px, 2vw, 18px);
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── 时间线卡片 ── */
+    .timeline-section {
+      max-width: 860px;
+      margin: 50px auto;
+      padding: 0 20px;
+    }
+
+    .section-title {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      color: #6366f1;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, #6366f1, transparent);
+    }
+
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+
+    .timeline-item {
+      display: flex;
+      gap: 24px;
+      position: relative;
+    }
+
+    .timeline-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 48px;
+      flex-shrink: 0;
+    }
+
+    .timeline-dot {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      flex-shrink: 0;
+      z-index: 1;
+    }
+
+    .timeline-line {
+      width: 2px;
+      flex: 1;
+      background: linear-gradient(to bottom, #6366f1, #2a2a4a);
+      min-height: 30px;
+    }
+
+    .timeline-item:last-child .timeline-line { display: none; }
+
+    .timeline-card {
+      background: #13132a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 22px 26px;
+      margin-bottom: 24px;
+      flex: 1;
+      transition: border-color 0.3s;
+    }
+
+    .timeline-card:hover { border-color: #6366f1; }
+
+    .timeline-card h3 {
+      font-size: 16px;
+      font-weight: 700;
+      color: #c7d2fe;
+      margin-bottom: 8px;
+    }
+
+    .timeline-card p {
+      font-size: 14px;
+      color: #94a3b8;
+      line-height: 1.7;
+    }
+
+    .timeline-card .year {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: #6366f1;
+      background: #1e1e40;
+      padding: 2px 10px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* ── 核心演示区 ── */
+    .demo-section {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .demo-card {
+      background: linear-gradient(135deg, #13132a, #1a1030);
+      border: 1px solid #3730a3;
+      border-radius: 24px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .demo-card::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 300px; height: 300px;
+      background: radial-gradient(circle, rgba(99,102,241,0.12), transparent 70%);
+      pointer-events: none;
+    }
+
+    .demo-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #e0e7ff;
+      margin-bottom: 8px;
+    }
+
+    .demo-subtitle {
+      font-size: 14px;
+      color: #64748b;
+      margin-bottom: 32px;
+    }
+
+    /* 问题气泡 */
+    .question-bubble {
+      background: linear-gradient(135deg, #1e3a5f, #1e2d4a);
+      border: 1px solid #2563eb;
+      border-radius: 18px 18px 18px 4px;
+      padding: 16px 22px;
+      display: inline-block;
+      font-size: 16px;
+      color: #93c5fd;
+      margin-bottom: 32px;
+      position: relative;
+    }
+
+    .question-bubble::before {
+      content: '🧑 用户提问';
+      display: block;
+      font-size: 11px;
+      color: #3b82f6;
+      font-weight: 700;
+      margin-bottom: 6px;
+      letter-spacing: 1px;
+    }
+
+    /* 预测流程 */
+    .predict-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .predict-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .predict-step.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .step-num {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .step-content {
+      flex: 1;
+      background: #0f0f22;
+      border: 1px solid #2a2a4a;
+      border-radius: 12px;
+      padding: 14px 18px;
+    }
+
+    .step-label {
+      font-size: 11px;
+      color: #6366f1;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .token-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .token {
+      display: inline-flex;
+      align-items: center;
+      padding: 5px 12px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      border: 1px solid;
+    }
+
+    .token.input {
+      background: #1e1e3a;
+      border-color: #4338ca;
+      color: #a5b4fc;
+    }
+
+    .token.predicted {
+      background: linear-gradient(135deg, #14532d, #166534);
+      border-color: #16a34a;
+      color: #86efac;
+      animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .token.arrow {
+      background: transparent;
+      border-color: transparent;
+      color: #475569;
+      font-size: 18px;
+      padding: 0 4px;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.5); opacity: 0; }
+      to   { transform: scale(1);   opacity: 1; }
+    }
+
+    /* 概率条 */
+    .prob-bar-wrap {
+      margin-top: 10px;
+    }
+
+    .prob-label {
+      font-size: 11px;
+      color: #64748b;
+      margin-bottom: 6px;
+    }
+
+    .prob-bars {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .prob-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .prob-word {
+      font-size: 13px;
+      color: #94a3b8;
+      width: 36px;
+      text-align: right;
+    }
+
+    .prob-bar-bg {
+      flex: 1;
+      height: 8px;
+      background: #1e1e3a;
+      border-radius: 4px;
+      overflow: hidden;
+    }
+
+    .prob-bar-fill {
+      height: 100%;
+      border-radius: 4px;
+      width: 0;
+      transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .prob-bar-fill.top { background: linear-gradient(to right, #6366f1, #a78bfa); }
+    .prob-bar-fill.mid { background: linear-gradient(to right, #0ea5e9, #38bdf8); }
+    .prob-bar-fill.low { background: #334155; }
+
+    .prob-pct {
+      font-size: 11px;
+      color: #64748b;
+      width: 36px;
+    }
+
+    /* 最终输出 */
+    .final-output {
+      background: linear-gradient(135deg, #0f2a1a, #0a1f2e);
+      border: 1px solid #16a34a;
+      border-radius: 16px;
+      padding: 22px 26px;
+      opacity: 0;
+      transform: translateY(16px);
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    .final-output.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .final-output-label {
+      font-size: 11px;
+      color: #16a34a;
+      font-weight: 700;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    .final-text {
+      font-size: 20px;
+      font-weight: 700;
+      color: #86efac;
+      letter-spacing: 2px;
+    }
+
+    .final-text span {
+      display: inline-block;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    .final-text span.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 控制按钮 */
+    .controls {
+      display: flex;
+      gap: 12px;
+      margin-top: 28px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 28px;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(99,102,241,0.35);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(99,102,241,0.5);
+    }
+
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      background: transparent;
+      color: #94a3b8;
+      border: 1px solid #2a2a4a;
+    }
+
+    .btn-ghost:hover {
+      border-color: #6366f1;
+      color: #a5b4fc;
+    }
+
+    /* ── 本质洞察 ── */
+    .insight-section {
+      max-width: 900px;
+      margin: 0 auto 60px;
+      padding: 0 20px;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+    }
+
+    .insight-card {
+      background: #13132a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 24px;
+      transition: all 0.3s;
+    }
+
+    .insight-card:hover {
+      border-color: #6366f1;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 30px rgba(99,102,241,0.15);
+    }
+
+    .insight-icon { font-size: 28px; margin-bottom: 14px; }
+
+    .insight-card h4 {
+      font-size: 15px;
+      font-weight: 700;
+      color: #c7d2fe;
+      margin-bottom: 8px;
+    }
+
+    .insight-card p {
+      font-size: 13px;
+      color: #64748b;
+      line-height: 1.7;
+    }
+
+    /* ── 名言 ── */
+    .quote-section {
+      max-width: 700px;
+      margin: 0 auto 80px;
+      padding: 0 20px;
+      text-align: center;
+    }
+
+    .quote-text {
+      font-size: clamp(18px, 3vw, 26px);
+      font-weight: 700;
+      color: #e0e7ff;
+      line-height: 1.6;
+      margin-bottom: 16px;
+    }
+
+    .quote-text em {
+      font-style: normal;
+      background: linear-gradient(135deg, #a5b4fc, #e879f9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .quote-sub {
+      font-size: 14px;
+      color: #475569;
+    }
+
+    /* 响应式 */
+    @media (max-width: 600px) {
+      .demo-card { padding: 24px 18px; }
+      .timeline-left { width: 36px; }
+      .timeline-dot { width: 36px; height: 36px; font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Hero ── -->
+<section class="hero">
+  <div class="badge">AI 提效培训 · 基础认知</div>
+  <h1>大模型到底是什么？</h1>
+  <p>剥开所有技术外衣，它的本质极其朴素——<br/>一台不断猜测"下一个词"的机器。</p>
+</section>
+
+<!-- ── 技术背景时间线 ── -->
+<section class="timeline-section">
+  <div class="section-title">技术背景</div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot" style="background:linear-gradient(135deg,#1e3a5f,#2563eb)">🔬</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-card">
+        <div class="year">2017 · Google</div>
+        <h3>Transformer 架构诞生</h3>
+        <p>Google 团队发表论文《Attention Is All You Need》，提出了 Transformer 架构。几乎所有现代大模型都基于这个架构训练而成。</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot" style="background:linear-gradient(135deg,#14532d,#16a34a)">🚀</div>
+        <div class="timeline-line"></div>
+      </div>
+      <div class="timeline-card">
+        <div class="year">2022 · OpenAI</div>
+        <h3>ChatGPT 引爆全球</h3>
+        <p>OpenAI 将 LLM 带入大众视野，让"和 AI 对话"从科幻变成日常。真正把大模型爆火全球的，是 OpenAI。</p>
+      </div>
+    </div>
+
+    <div class="timeline-item">
+      <div class="timeline-left">
+        <div class="timeline-dot" style="background:linear-gradient(135deg,#4c1d95,#7c3aed)">⚡</div>
+      </div>
+      <div class="timeline-card">
+        <div class="year">现在 · 全行业</div>
+        <h3>LLM 成为 AI 核心引擎</h3>
+        <p>GPT、Claude、Gemini、DeepSeek……市面上几乎所有 AI 产品，底层都跑着一个大语言模型。</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 核心演示 ── -->
+<section class="demo-section">
+  <div class="section-title">核心演示</div>
+
+  <div class="demo-card">
+    <div class="demo-title">🎮 文字接龙游戏</div>
+    <div class="demo-subtitle">点击「开始预测」，看大模型如何一个字一个字地生成回答</div>
+
+    <div class="question-bubble">马克的视频怎么样？</div>
+
+    <div class="predict-flow" id="predictFlow">
+
+      <!-- Step 1 -->
+      <div class="predict-step" id="step1">
+        <div class="step-num">1</div>
+        <div class="step-content">
+          <div class="step-label">第 1 次预测 · 输入上下文</div>
+          <div class="token-row">
+            <span class="token input">马克</span>
+            <span class="token input">的</span>
+            <span class="token input">视频</span>
+            <span class="token input">怎么样</span>
+            <span class="token input">？</span>
+            <span class="token arrow">→</span>
+            <span class="token predicted" id="t1">特别</span>
+          </div>
+          <div class="prob-bar-wrap">
+            <div class="prob-label">候选词概率分布</div>
+            <div class="prob-bars">
+              <div class="prob-row">
+                <span class="prob-word">特别</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill top" id="pb1a"></div></div>
+                <span class="prob-pct">82%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">非常</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill mid" id="pb1b"></div></div>
+                <span class="prob-pct">11%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">还行</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill low" id="pb1c"></div></div>
+                <span class="prob-pct">4%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="predict-step" id="step2">
+        <div class="step-num">2</div>
+        <div class="step-content">
+          <div class="step-label">第 2 次预测 · 追加"特别"后再预测</div>
+          <div class="token-row">
+            <span class="token input">马克</span>
+            <span class="token input">的</span>
+            <span class="token input">视频</span>
+            <span class="token input">怎么样</span>
+            <span class="token input">？</span>
+            <span class="token input">特别</span>
+            <span class="token arrow">→</span>
+            <span class="token predicted" id="t2">得</span>
+          </div>
+          <div class="prob-bar-wrap">
+            <div class="prob-label">候选词概率分布</div>
+            <div class="prob-bars">
+              <div class="prob-row">
+                <span class="prob-word">得</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill top" id="pb2a"></div></div>
+                <span class="prob-pct">74%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">好</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill mid" id="pb2b"></div></div>
+                <span class="prob-pct">18%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">棒</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill low" id="pb2c"></div></div>
+                <span class="prob-pct">5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="predict-step" id="step3">
+        <div class="step-num">3</div>
+        <div class="step-content">
+          <div class="step-label">第 3 次预测 · 追加"得"后再预测</div>
+          <div class="token-row">
+            <span class="token input">马克</span>
+            <span class="token input">的</span>
+            <span class="token input">视频</span>
+            <span class="token input">怎么样</span>
+            <span class="token input">？</span>
+            <span class="token input">特别</span>
+            <span class="token input">得</span>
+            <span class="token arrow">→</span>
+            <span class="token predicted" id="t3">棒</span>
+          </div>
+          <div class="prob-bar-wrap">
+            <div class="prob-label">候选词概率分布</div>
+            <div class="prob-bars">
+              <div class="prob-row">
+                <span class="prob-word">棒</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill top" id="pb3a"></div></div>
+                <span class="prob-pct">91%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">好</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill mid" id="pb3b"></div></div>
+                <span class="prob-pct">6%</span>
+              </div>
+              <div class="prob-row">
+                <span class="prob-word">赞</span>
+                <div class="prob-bar-bg"><div class="prob-bar-fill low" id="pb3c"></div></div>
+                <span class="prob-pct">2%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- 最终输出 -->
+    <div class="final-output" id="finalOutput">
+      <div class="final-output-label">🤖 AI 最终回答</div>
+      <div class="final-text" id="finalText">
+        <span id="fw1">特别</span><span id="fw2">得</span><span id="fw3">棒</span><span id="fw4"> ！</span>
+      </div>
+    </div>
+
+    <!-- 控制按钮 -->
+    <div class="controls">
+      <button class="btn btn-primary" id="btnStart" onclick="startDemo()">▶ 开始预测</button>
+      <button class="btn btn-ghost" onclick="resetDemo()">↺ 重置</button>
+    </div>
+  </div>
+</section>
+
+<!-- ── 本质洞察 ── -->
+<section class="insight-section">
+  <div class="section-title">本质洞察</div>
+  <div class="insight-grid">
+
+    <div class="insight-card">
+      <div class="insight-icon">🎯</div>
+      <h4>它在"猜"，不是在"想"</h4>
+      <p>大模型不是理解了问题再思考答案，而是根据上下文，统计性地预测下一个最可能出现的词。</p>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-icon">🔄</div>
+      <h4>逐字生成，循环迭代</h4>
+      <p>每次只预测一个 Token，然后把它追加到输入里，再预测下一个。这就是为什么 ChatGPT 是一字一字蹦出来的。</p>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-icon">📚</div>
+      <h4>猜得准，靠的是海量训练</h4>
+      <p>在数万亿字的文本上训练，让模型学会了语言的规律和知识。猜得足够准，看起来就像在"思考"了。</p>
+    </div>
+
+    <div class="insight-card">
+      <div class="insight-icon">⚙️</div>
+      <h4>Transformer 是底层引擎</h4>
+      <p>Google 2017 年提出的 Transformer 架构，让模型能同时"关注"整个上下文，大幅提升了预测精度。</p>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── 金句 ── -->
+<section class="quote-section">
+  <div class="quote-text">
+    猜得足够准，<br/>看起来就像在<em>「思考」</em>了。
+  </div>
+  <div class="quote-sub">这就是大模型的全部秘密。</div>
+</section>
+
+<script>
+  let demoRunning = false;
+  let demoStep = 0;
+
+  const steps = [
+    {
+      id: 'step1',
+      bars: [
+        { id: 'pb1a', width: '82%' },
+        { id: 'pb1b', width: '11%' },
+        { id: 'pb1c', width: '4%'  },
+      ]
+    },
+    {
+      id: 'step2',
+      bars: [
+        { id: 'pb2a', width: '74%' },
+        { id: 'pb2b', width: '18%' },
+        { id: 'pb2c', width: '5%'  },
+      ]
+    },
+    {
+      id: 'step3',
+      bars: [
+        { id: 'pb3a', width: '91%' },
+        { id: 'pb3b', width: '6%'  },
+        { id: 'pb3c', width: '2%'  },
+      ]
+    },
+  ];
+
+  function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
+
+  async function startDemo() {
+    if (demoRunning) return;
+    demoRunning = true;
+    document.getElementById('btnStart').disabled = true;
+    document.getElementById('btnStart').style.opacity = '0.5';
+
+    for (let i = 0; i < steps.length; i++) {
+      const s = steps[i];
+      const el = document.getElementById(s.id);
+
+      // 显示步骤
+      el.classList.add('visible');
+      await delay(300);
+
+      // 动画概率条
+      for (const bar of s.bars) {
+        document.getElementById(bar.id).style.width = bar.width;
+      }
+
+      await delay(1000);
+    }
+
+    // 显示最终输出
+    const finalOutput = document.getElementById('finalOutput');
+    finalOutput.classList.add('visible');
+    await delay(300);
+
+    // 逐字显示
+    const words = ['fw1', 'fw2', 'fw3', 'fw4'];
+    for (const wid of words) {
+      document.getElementById(wid).classList.add('show');
+      await delay(250);
+    }
+
+    demoRunning = false;
+  }
+
+  function resetDemo() {
+    demoRunning = false;
+
+    // 隐藏所有步骤
+    steps.forEach(s => {
+      document.getElementById(s.id).classList.remove('visible');
+      s.bars.forEach(b => {
+        document.getElementById(b.id).style.width = '0';
+      });
+    });
+
+    // 隐藏最终输出
+    document.getElementById('finalOutput').classList.remove('visible');
+    ['fw1','fw2','fw3','fw4'].forEach(id => {
+      document.getElementById(id).classList.remove('show');
+    });
+
+    // 恢复按钮
+    const btn = document.getElementById('btnStart');
+    btn.disabled = false;
+    btn.style.opacity = '1';
+  }
+</script>
+</body>
+</html>
