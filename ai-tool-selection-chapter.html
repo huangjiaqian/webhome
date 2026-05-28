@@ -1,0 +1,1695 @@
+<!doctype html>
+<html lang="zh-CN">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>AI 提效章节｜根据任务选择 AI 工具</title>
+        <style>
+            :root {
+                --bg: #f6f7fb;
+                --card: #ffffff;
+                --text: #1f2937;
+                --muted: #6b7280;
+                --primary: #6c5ce7;
+                --primary-dark: #5145cd;
+                --secondary: #00b894;
+                --blue: #3b82f6;
+                --purple: #8b5cf6;
+                --pink: #ec4899;
+                --green: #10b981;
+                --orange: #f97316;
+                --cyan: #06b6d4;
+                --red: #ef4444;
+                --yellow: #f59e0b;
+                --slate: #334155;
+                --border: #e5e7eb;
+                --soft: #f9fafb;
+                --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+                --radius: 22px;
+            }
+
+            * {
+                box-sizing: border-box;
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                font-family:
+                    -apple-system, BlinkMacSystemFont, "Segoe UI",
+                    "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Arial,
+                    sans-serif;
+                background:
+                    radial-gradient(
+                        circle at top left,
+                        rgba(108, 92, 231, 0.18),
+                        transparent 30%
+                    ),
+                    radial-gradient(
+                        circle at top right,
+                        rgba(0, 184, 148, 0.16),
+                        transparent 32%
+                    ),
+                    linear-gradient(
+                        180deg,
+                        #f8fafc 0%,
+                        #f6f7fb 42%,
+                        #eef2ff 100%
+                    );
+                color: var(--text);
+                line-height: 1.7;
+            }
+
+            a {
+                color: inherit;
+                text-decoration: none;
+            }
+
+            .page {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 28px 22px 80px;
+            }
+
+            .nav {
+                position: sticky;
+                top: 14px;
+                z-index: 30;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                gap: 16px;
+                padding: 12px 16px;
+                margin-bottom: 28px;
+                background: rgba(255, 255, 255, 0.84);
+                backdrop-filter: blur(18px);
+                border: 1px solid rgba(229, 231, 235, 0.88);
+                border-radius: 999px;
+                box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+            }
+
+            .brand {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-weight: 900;
+                letter-spacing: -0.02em;
+                white-space: nowrap;
+            }
+
+            .brand-icon {
+                width: 36px;
+                height: 36px;
+                display: grid;
+                place-items: center;
+                border-radius: 50%;
+                color: #fff;
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                box-shadow: 0 8px 20px rgba(108, 92, 231, 0.28);
+                font-size: 13px;
+            }
+
+            .nav-links {
+                display: flex;
+                gap: 8px;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                font-size: 13px;
+                color: var(--muted);
+            }
+
+            .nav-links a {
+                padding: 7px 11px;
+                border-radius: 999px;
+                transition: 0.2s;
+            }
+
+            .nav-links a:hover {
+                color: var(--primary);
+                background: rgba(108, 92, 231, 0.1);
+            }
+
+            .glass-card {
+                background: rgba(255, 255, 255, 0.92);
+                border: 1px solid rgba(229, 231, 235, 0.9);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+            }
+
+            .hero {
+                display: grid;
+                grid-template-columns: 1.18fr 0.82fr;
+                gap: 24px;
+                align-items: stretch;
+                margin-bottom: 28px;
+            }
+
+            .hero-main {
+                padding: 46px;
+                position: relative;
+                overflow: hidden;
+                min-height: 392px;
+            }
+
+            .hero-main::after {
+                content: "";
+                position: absolute;
+                right: -90px;
+                top: -90px;
+                width: 270px;
+                height: 270px;
+                background: linear-gradient(
+                    135deg,
+                    rgba(108, 92, 231, 0.22),
+                    rgba(0, 184, 148, 0.2)
+                );
+                border-radius: 50%;
+            }
+
+            .hero-main::before {
+                content: "";
+                position: absolute;
+                right: 70px;
+                bottom: 36px;
+                width: 90px;
+                height: 90px;
+                background: rgba(59, 130, 246, 0.1);
+                border: 1px solid rgba(59, 130, 246, 0.18);
+                border-radius: 28px;
+                transform: rotate(12deg);
+            }
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 13px;
+                margin-bottom: 18px;
+                border-radius: 999px;
+                color: var(--primary-dark);
+                background: rgba(108, 92, 231, 0.11);
+                font-size: 14px;
+                font-weight: 800;
+            }
+
+            h1 {
+                position: relative;
+                z-index: 1;
+                margin: 0 0 18px;
+                font-size: clamp(36px, 6vw, 64px);
+                line-height: 1.08;
+                letter-spacing: -0.06em;
+            }
+
+            .gradient-text {
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+                -webkit-background-clip: text;
+                color: transparent;
+            }
+
+            .hero-desc {
+                position: relative;
+                z-index: 1;
+                max-width: 760px;
+                font-size: 18px;
+                color: var(--muted);
+                margin-bottom: 28px;
+            }
+
+            .hero-actions {
+                position: relative;
+                z-index: 1;
+                display: flex;
+                gap: 12px;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 12px 18px;
+                border-radius: 14px;
+                font-weight: 900;
+                border: 1px solid transparent;
+                cursor: pointer;
+                transition: 0.2s;
+            }
+
+            .btn-primary {
+                color: #fff;
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--primary-dark)
+                );
+                box-shadow: 0 12px 26px rgba(108, 92, 231, 0.26);
+            }
+
+            .btn-ghost {
+                color: var(--text);
+                background: #fff;
+                border-color: var(--border);
+            }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+            .hero-side {
+                padding: 24px;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+            }
+
+            .side-title {
+                font-size: 19px;
+                font-weight: 900;
+                margin-bottom: 14px;
+                letter-spacing: -0.02em;
+            }
+
+            .principle-list {
+                display: grid;
+                gap: 12px;
+            }
+
+            .principle {
+                display: flex;
+                gap: 12px;
+                padding: 14px;
+                border-radius: 16px;
+                background: #f9fafb;
+                border: 1px solid var(--border);
+            }
+
+            .num {
+                min-width: 32px;
+                height: 32px;
+                display: grid;
+                place-items: center;
+                border-radius: 10px;
+                color: #fff;
+                font-weight: 900;
+                background: linear-gradient(
+                    135deg,
+                    var(--primary),
+                    var(--secondary)
+                );
+            }
+
+            .principle span {
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            .mini-stat {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                margin-top: auto;
+            }
+
+            .stat {
+                padding: 14px 10px;
+                border-radius: 16px;
+                background: #fff;
+                border: 1px solid var(--border);
+                text-align: center;
+            }
+
+            .stat strong {
+                display: block;
+                font-size: 23px;
+                color: var(--primary);
+                line-height: 1.1;
+            }
+
+            .stat span {
+                font-size: 12px;
+                color: var(--muted);
+            }
+
+            .section {
+                padding: 31px;
+                margin: 26px 0;
+                background: rgba(255, 255, 255, 0.93);
+                border: 1px solid rgba(229, 231, 235, 0.9);
+                border-radius: var(--radius);
+                box-shadow: var(--shadow);
+            }
+
+            .section-title {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                margin: 0 0 8px;
+                font-size: 29px;
+                letter-spacing: -0.04em;
+                line-height: 1.25;
+            }
+
+            .section-lead {
+                margin: 0 0 24px;
+                color: var(--muted);
+                font-size: 16px;
+            }
+
+            .belief-card {
+                position: relative;
+                padding: 34px;
+                margin: 26px 0;
+                border-radius: 28px;
+                overflow: hidden;
+                color: #fff;
+                background:
+                    radial-gradient(
+                        circle at 12% 20%,
+                        rgba(255, 255, 255, 0.22),
+                        transparent 24%
+                    ),
+                    linear-gradient(
+                        135deg,
+                        #111827 0%,
+                        #4338ca 52%,
+                        #059669 100%
+                    );
+                box-shadow: 0 24px 60px rgba(79, 70, 229, 0.22);
+            }
+
+            .belief-card::after {
+                content: "";
+                position: absolute;
+                right: -70px;
+                top: -70px;
+                width: 220px;
+                height: 220px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.12);
+            }
+
+            .belief-content {
+                position: relative;
+                z-index: 1;
+            }
+
+            .belief-label {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 7px 12px;
+                margin-bottom: 16px;
+                border-radius: 999px;
+                color: #e0f2fe;
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                font-weight: 800;
+                font-size: 14px;
+            }
+
+            .belief-card h2 {
+                margin: 0 0 14px;
+                font-size: clamp(28px, 4vw, 44px);
+                line-height: 1.15;
+                letter-spacing: -0.05em;
+            }
+
+            .belief-card p {
+                max-width: 920px;
+                margin: 0 0 16px;
+                color: rgba(255, 255, 255, 0.88);
+                font-size: 18px;
+            }
+
+            .belief-highlight {
+                display: grid;
+                grid-template-columns: 0.75fr 1.25fr;
+                gap: 16px;
+                margin-top: 22px;
+            }
+
+            .big-number {
+                padding: 22px;
+                border-radius: 22px;
+                background: rgba(255, 255, 255, 0.12);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+
+            .big-number strong {
+                display: block;
+                font-size: 58px;
+                line-height: 1;
+                letter-spacing: -0.06em;
+                color: #fff;
+            }
+
+            .big-number span {
+                color: rgba(255, 255, 255, 0.82);
+                font-weight: 700;
+            }
+
+            .belief-points {
+                display: grid;
+                gap: 10px;
+                padding: 20px;
+                border-radius: 22px;
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.18);
+            }
+
+            .belief-point {
+                display: flex;
+                gap: 10px;
+                align-items: flex-start;
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            .belief-point b {
+                color: #fff;
+            }
+
+            .scene-tabs {
+                display: grid;
+                grid-template-columns: repeat(6, 1fr);
+                gap: 12px;
+                margin-bottom: 18px;
+            }
+
+            .scene {
+                padding: 16px;
+                border-radius: 18px;
+                background: #fff;
+                border: 1px solid var(--border);
+                text-align: center;
+                transition: 0.2s;
+            }
+
+            .scene:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+                border-color: rgba(108, 92, 231, 0.4);
+            }
+
+            .scene-icon {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+
+            .scene strong {
+                display: block;
+                font-size: 15px;
+            }
+
+            .scene span {
+                display: block;
+                color: var(--muted);
+                font-size: 12px;
+                margin-top: 4px;
+            }
+
+            .quote-box {
+                padding: 28px;
+                margin-top: 20px;
+                border-radius: 22px;
+                background:
+                    linear-gradient(
+                        135deg,
+                        rgba(108, 92, 231, 0.1),
+                        rgba(0, 184, 148, 0.08)
+                    ),
+                    #fff;
+                border: 1px solid var(--border);
+                border-left: 8px solid var(--primary);
+            }
+
+            .quote-box strong {
+                font-size: 24px;
+                letter-spacing: -0.03em;
+            }
+
+            .quote-box p {
+                margin: 8px 0 0;
+                color: var(--slate);
+                font-size: 17px;
+            }
+
+            .tool-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 18px;
+            }
+
+            .tool-card {
+                position: relative;
+                padding: 22px;
+                border-radius: 20px;
+                background: #fff;
+                border: 1px solid var(--border);
+                box-shadow: 0 10px 26px rgba(15, 23, 42, 0.05);
+                overflow: hidden;
+                transition: 0.2s;
+            }
+
+            .tool-card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 18px 34px rgba(15, 23, 42, 0.08);
+            }
+
+            .tool-card::before {
+                content: "";
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 6px;
+                height: 100%;
+                background: var(--accent, var(--primary));
+            }
+
+            .card-kicker {
+                display: inline-block;
+                margin-bottom: 10px;
+                padding: 4px 9px;
+                border-radius: 999px;
+                background: #f3f4f6;
+                color: var(--muted);
+                font-size: 12px;
+                font-weight: 800;
+            }
+
+            .tool-card h3 {
+                margin: 0 0 10px;
+                font-size: 20px;
+                letter-spacing: -0.02em;
+            }
+
+            .tool-card p {
+                margin: 0 0 14px;
+                color: var(--muted);
+            }
+
+            .task-list {
+                margin: 12px 0 0;
+                padding-left: 18px;
+            }
+
+            .task-list li {
+                margin: 5px 0;
+            }
+
+            .tag-list {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                margin-top: 14px;
+            }
+
+            .tag {
+                padding: 5px 9px;
+                border-radius: 999px;
+                font-size: 12px;
+                color: #374151;
+                background: #f3f4f6;
+                border: 1px solid #e5e7eb;
+            }
+
+            .table-wrap {
+                overflow: hidden;
+                margin-top: 18px;
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 22px;
+                box-shadow: 0 12px 30px rgba(15, 23, 42, 0.05);
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                background: #fff;
+                font-size: 14px;
+            }
+
+            thead {
+                background: #111827;
+                color: #fff;
+            }
+
+            th,
+            td {
+                padding: 15px 16px;
+                text-align: left;
+                vertical-align: top;
+                border-bottom: 1px solid var(--border);
+            }
+
+            tbody tr:hover {
+                background: #f9fafb;
+            }
+
+            tbody tr:last-child td {
+                border-bottom: none;
+            }
+
+            th {
+                font-size: 13px;
+                letter-spacing: 0.02em;
+            }
+
+            .pill {
+                display: inline-block;
+                padding: 5px 9px;
+                border-radius: 999px;
+                color: #fff;
+                font-size: 12px;
+                font-weight: 900;
+                white-space: nowrap;
+            }
+
+            .pill-purple {
+                background: var(--purple);
+            }
+            .pill-green {
+                background: var(--green);
+            }
+            .pill-blue {
+                background: var(--blue);
+            }
+            .pill-orange {
+                background: var(--orange);
+            }
+            .pill-cyan {
+                background: var(--cyan);
+            }
+            .pill-pink {
+                background: var(--pink);
+            }
+
+            .workflow {
+                display: grid;
+                grid-template-columns: repeat(5, 1fr);
+                gap: 14px;
+                margin-top: 18px;
+            }
+
+            .step {
+                padding: 18px;
+                background: #fff;
+                border: 1px solid var(--border);
+                border-radius: 18px;
+                position: relative;
+                min-height: 170px;
+                transition: 0.2s;
+            }
+
+            .step:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+            }
+
+            .step-no {
+                width: 34px;
+                height: 34px;
+                display: grid;
+                place-items: center;
+                border-radius: 12px;
+                color: #fff;
+                font-weight: 900;
+                background: var(--primary);
+                margin-bottom: 12px;
+            }
+
+            .step h3 {
+                margin: 0 0 8px;
+                font-size: 17px;
+            }
+
+            .step p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            .tips-grid {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
+                gap: 16px;
+            }
+
+            .tip {
+                padding: 18px;
+                border-radius: 18px;
+                background: #fff;
+                border: 1px solid var(--border);
+                transition: 0.2s;
+            }
+
+            .tip:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 26px rgba(15, 23, 42, 0.08);
+            }
+
+            .tip-icon {
+                font-size: 26px;
+                margin-bottom: 8px;
+            }
+
+            .tip h3 {
+                margin: 0 0 8px;
+                font-size: 17px;
+            }
+
+            .tip p {
+                margin: 0;
+                color: var(--muted);
+                font-size: 14px;
+            }
+
+            .prompt-box {
+                display: grid;
+                grid-template-columns: 0.95fr 1.05fr;
+                gap: 18px;
+                margin-top: 20px;
+            }
+
+            .prompt-card {
+                padding: 22px;
+                border-radius: 20px;
+                background: #fff;
+                border: 1px solid var(--border);
+            }
+
+            .prompt-card h3 {
+                margin: 0 0 10px;
+                font-size: 19px;
+            }
+
+            .code-like {
+                padding: 16px;
+                border-radius: 16px;
+                background: #0f172a;
+                color: #dbeafe;
+                font-size: 14px;
+                line-height: 1.8;
+                white-space: pre-wrap;
+                overflow-x: auto;
+            }
+
+            .footer {
+                margin-top: 30px;
+                padding: 24px;
+                text-align: center;
+                color: var(--muted);
+            }
+
+            .print-note {
+                color: #94a3b8;
+                font-size: 12px;
+            }
+
+            @media (max-width: 1020px) {
+                .hero {
+                    grid-template-columns: 1fr;
+                }
+
+                .tool-grid,
+                .tips-grid,
+                .prompt-box,
+                .belief-highlight {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .workflow {
+                    grid-template-columns: repeat(2, 1fr);
+                }
+
+                .scene-tabs {
+                    grid-template-columns: repeat(3, 1fr);
+                }
+
+                .nav {
+                    align-items: flex-start;
+                    border-radius: 22px;
+                    flex-direction: column;
+                }
+
+                .nav-links {
+                    justify-content: flex-start;
+                }
+            }
+
+            @media (max-width: 680px) {
+                .page {
+                    padding: 18px 14px 60px;
+                }
+
+                .hero-main {
+                    padding: 28px;
+                }
+
+                .tool-grid,
+                .tips-grid,
+                .workflow,
+                .scene-tabs,
+                .prompt-box,
+                .belief-highlight {
+                    grid-template-columns: 1fr;
+                }
+
+                .mini-stat {
+                    grid-template-columns: 1fr;
+                }
+
+                table {
+                    font-size: 13px;
+                }
+
+                th,
+                td {
+                    padding: 12px;
+                }
+
+                .table-wrap {
+                    overflow-x: auto;
+                }
+            }
+
+            @media print {
+                body {
+                    background: #fff;
+                }
+
+                .nav,
+                .hero-actions {
+                    display: none;
+                }
+
+                .page {
+                    max-width: none;
+                    padding: 0;
+                }
+
+                .section,
+                .hero-main,
+                .hero-side,
+                .tool-card,
+                .table-wrap,
+                .quote-box,
+                .tip,
+                .step,
+                .belief-card {
+                    box-shadow: none;
+                    break-inside: avoid;
+                }
+            }
+        </style>
+    </head>
+
+    <body>
+        <div class="page">
+            <nav class="nav">
+                <a class="brand" href="#top">
+                    <span class="brand-icon">AI</span>
+                    <span>AI 提效｜工具选择章节</span>
+                </a>
+                <div class="nav-links">
+                    <a href="#mindset">关键认知</a>
+                    <a href="#logic">选型逻辑</a>
+                    <a href="#categories">工具分类</a>
+                    <a href="#table">速查表</a>
+                    <a href="#workflow">组合流程</a>
+                    <a href="#prompts">提示词</a>
+                    <a href="#tips">使用底线</a>
+                </div>
+            </nav>
+
+            <header class="hero" id="top">
+                <section class="hero-main glass-card">
+                    <div class="badge">
+                        🚀 AI 提效章节：根据任务选择 AI 工具
+                    </div>
+                    <h1>
+                        不要先问用哪个 AI，<br />
+                        先判断<span class="gradient-text">任务类型</span>
+                    </h1>
+                    <p class="hero-desc">
+                        AI 工具很多，但选择逻辑并不复杂。
+                        如果任务是写作、总结、改写，优先选择通用对话工具；
+                        如果任务需要多步骤执行，选择 AI 智能体； 如果要做
+                        PPT、处理表格、写代码，就选择对应的专业工具。
+                    </p>
+                    <div class="hero-actions">
+                        <a class="btn btn-primary" href="#mindset"
+                            >先看关键认知</a
+                        >
+                        <a class="btn btn-ghost" href="#table"
+                            >打开工具速查表</a
+                        >
+                    </div>
+                </section>
+
+                <aside class="hero-side glass-card">
+                    <div>
+                        <div class="side-title">🎯 本章节关注</div>
+                        <div class="principle-list">
+                            <div class="principle">
+                                <div class="num">1</div>
+                                <div>
+                                    <strong>先建立正确认知</strong><br />
+                                    <span
+                                        >AI 不必一次完成
+                                        100%，能减少低价值劳动就值得使用。</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="principle">
+                                <div class="num">2</div>
+                                <div>
+                                    <strong>再按任务选择工具</strong><br />
+                                    <span
+                                        >从写作、执行、编程、PPT、数据等任务出发选择工具类型。</span
+                                    >
+                                </div>
+                            </div>
+                            <div class="principle">
+                                <div class="num">3</div>
+                                <div>
+                                    <strong>最后组合完成交付</strong><br />
+                                    <span
+                                        >复杂任务通常需要多个 AI
+                                        工具接力，再由人完成复核和定稿。</span
+                                    >
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mini-stat">
+                        <div class="stat">
+                            <strong>30%</strong>
+                            <span>低价值劳动减少</span>
+                        </div>
+                        <div class="stat">
+                            <strong>5</strong>
+                            <span>类核心工具</span>
+                        </div>
+                        <div class="stat">
+                            <strong>4</strong>
+                            <span>条使用底线</span>
+                        </div>
+                    </div>
+                </aside>
+            </header>
+
+            <section class="belief-card" id="mindset">
+                <div class="belief-content">
+                    <div class="belief-label">
+                        🧠 关键认知：破除“完美主义”陷阱
+                    </div>
+                    <h2>AI 的价值，不在于替你做完 100%</h2>
+                    <p>
+                        很多人迟迟不用
+                        AI，是因为觉得它“不够懂我”“不够定制”“结果还要修改”。
+                        但这恰恰是 AI
+                        提效最常见的误区：我们不应该用“完美替代”的标准来判断
+                        AI，而应该用“效率放大”的标准来判断 AI。
+                    </p>
+
+                    <div class="belief-highlight">
+                        <div class="big-number">
+                            <strong>30%</strong>
+                            <span>少做一部分低价值劳动，就已经是显著提效</span>
+                        </div>
+
+                        <div class="belief-points">
+                            <div class="belief-point">
+                                <span>✅</span>
+                                <div>
+                                    <b>不完美的通用工具，也有高频价值。</b
+                                    ><br />
+                                    它不是为你完全定制的，但每天都能帮助写作、总结、改写、翻译、提纲整理和初步分析。
+                                </div>
+                            </div>
+                            <div class="belief-point">
+                                <span>✅</span>
+                                <div>
+                                    <b>不完美的智能助理，也是能力放大器。</b
+                                    ><br />
+                                    它无法 100%
+                                    满足所有定制需求，但能在信息整理、任务拆解、初稿生成、流程辅助上持续放大个人能力。
+                                </div>
+                            </div>
+                            <div class="belief-point">
+                                <span>⭐</span>
+                                <div>
+                                    <b>核心判断标准：</b><br />
+                                    决定是否使用 AI 的关键，不在于它能否替你做完
+                                    100% 的工作， 而在于它能否让你少做 30%
+                                    的低价值劳动。
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="logic">
+                <h2 class="section-title">🧭 一、AI 工具选型逻辑</h2>
+                <p class="section-lead">
+                    AI
+                    提效的第一步，不是记住所有工具名称，而是判断任务属于哪一种类型。
+                    任务类型明确了，工具选择就会变得简单。
+                </p>
+
+                <div class="scene-tabs">
+                    <div class="scene">
+                        <div class="scene-icon">✍️</div>
+                        <strong>写作表达</strong>
+                        <span>对话类 AI</span>
+                    </div>
+                    <div class="scene">
+                        <div class="scene-icon">🤖</div>
+                        <strong>多步执行</strong>
+                        <span>AI 智能体</span>
+                    </div>
+                    <div class="scene">
+                        <div class="scene-icon">💻</div>
+                        <strong>开发原型</strong>
+                        <span>AI 编程工具</span>
+                    </div>
+                    <div class="scene">
+                        <div class="scene-icon">📊</div>
+                        <strong>汇报展示</strong>
+                        <span>AI PPT 工具</span>
+                    </div>
+                    <div class="scene">
+                        <div class="scene-icon">📈</div>
+                        <strong>表格分析</strong>
+                        <span>数据处理工具</span>
+                    </div>
+                    <div class="scene">
+                        <div class="scene-icon">🧩</div>
+                        <strong>复杂交付</strong>
+                        <span>组合使用工具</span>
+                    </div>
+                </div>
+
+                <div class="quote-box">
+                    <strong>核心原则</strong>
+                    <p>
+                        AI 提效不是把所有工作交给
+                        AI，而是把重复、初稿、整理、转换、生成这些环节交给 AI；
+                        把判断、决策、风格、质量和责任留给人。
+                    </p>
+                </div>
+            </section>
+
+            <section class="section" id="categories">
+                <h2 class="section-title">🗂️ 二、五大类 AI 工具</h2>
+                <p class="section-lead">
+                    以下工具按任务场景划分。选择工具时，可以先看自己要完成的工作，再找到对应类别。
+                </p>
+
+                <div class="tool-grid">
+                    <article class="tool-card" style="--accent: var(--purple)">
+                        <span class="card-kicker">写作 / 总结 / 改写</span>
+                        <h3>1. 通用对话类工具</h3>
+                        <p>
+                            通用对话类工具适合日常问答、写作、总结、改写、头脑风暴和方案初稿。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>解释概念</li>
+                            <li>生成文档初稿</li>
+                            <li>整理提纲</li>
+                            <li>改写润色</li>
+                            <li>做初步分析</li>
+                            <li>生成提示词模板</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">豆包</span>
+                            <span class="tag">千问</span>
+                            <span class="tag">Flowith</span>
+                            <span class="tag">Claude</span>
+                            <span class="tag">Gemini</span>
+                            <span class="tag">DeepSeek</span>
+                            <span class="tag">腾讯元宝</span>
+                            <span class="tag">Kimi</span>
+                            <span class="tag">Grok</span>
+                            <span class="tag">Z.ai</span>
+                            <span class="tag">Qwen Chat</span>
+                            <span class="tag">MiniMax</span>
+                            <span class="tag">LongCat</span>
+                            <span class="tag">文心一言</span>
+                            <span class="tag">智谱清言</span>
+                            <span class="tag">讯飞星火</span>
+                            <span class="tag">华为小艺</span>
+                            <span class="tag">百灵大模型</span>
+                            <span class="tag">书生大模型</span>
+                            <span class="tag">阶跃 AI</span>
+                            <span class="tag">百小应</span>
+                            <span class="tag">天工 AI</span>
+                            <span class="tag">商量 SenseChat</span>
+                            <span class="tag">Me.bot</span>
+                            <span class="tag">Saylo</span>
+                            <span class="tag">Poe</span>
+                            <span class="tag">Copilot</span>
+                            <span class="tag">Lorka AI</span>
+                            <span class="tag">问小白</span>
+                        </div>
+                    </article>
+
+                    <article class="tool-card" style="--accent: var(--green)">
+                        <span class="card-kicker">多步骤 / 自动执行</span>
+                        <h3>2. AI 智能体工具</h3>
+                        <p>
+                            AI
+                            智能体适合目标明确、步骤较多、需要自动拆解和连续执行的任务。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>资料搜集与整理</li>
+                            <li>自动生成研究报告</li>
+                            <li>搭建自动化工作流</li>
+                            <li>创建个人或团队助手</li>
+                            <li>推进多步骤办公任务</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">DuMate</span>
+                            <span class="tag">ArkClaw</span>
+                            <span class="tag">Atoms</span>
+                            <span class="tag">咱指 HaiSnap</span>
+                            <span class="tag">爱派 AiPy</span>
+                            <span class="tag">Tabbit</span>
+                            <span class="tag">AstronClaw</span>
+                            <span class="tag">堆友 Agent</span>
+                            <span class="tag">码上飞</span>
+                            <span class="tag">QoderWork</span>
+                            <span class="tag">Flowith</span>
+                            <span class="tag">OpenClaw</span>
+                            <span class="tag">讯飞星辰 Agent</span>
+                            <span class="tag">01Agent</span>
+                            <span class="tag">扣子</span>
+                            <span class="tag">WorkBuddy</span>
+                            <span class="tag">Manus</span>
+                            <span class="tag">AutoClaw</span>
+                            <span class="tag">Mavis</span>
+                            <span class="tag">腾讯 Marvis</span>
+                            <span class="tag">Hermes Agent</span>
+                            <span class="tag">悟空</span>
+                            <span class="tag">Moxt</span>
+                            <span class="tag">happycapy</span>
+                            <span class="tag">Genspark</span>
+                            <span class="tag">Onioni</span>
+                            <span class="tag">Lovart</span>
+                            <span class="tag">MiniMax Hub</span>
+                            <span class="tag">QClaw</span>
+                            <span class="tag">Loomy</span>
+                        </div>
+                    </article>
+
+                    <article class="tool-card" style="--accent: var(--blue)">
+                        <span class="card-kicker">代码 / 原型 / 自动化</span>
+                        <h3>3. AI 编程工具</h3>
+                        <p>
+                            AI
+                            编程工具适合写代码、改代码、解释代码、搭建网页、小工具和产品原型。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>生成代码脚本</li>
+                            <li>解释代码逻辑</li>
+                            <li>修复 Bug</li>
+                            <li>搭建网页、小程序或应用原型</li>
+                            <li>生成接口、测试和自动化脚本</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">TRAE</span>
+                            <span class="tag">秒达</span>
+                            <span class="tag">码上飞</span>
+                            <span class="tag">代码小浣熊</span>
+                            <span class="tag">Codex</span>
+                            <span class="tag">Claude Code</span>
+                            <span class="tag">Qoder</span>
+                            <span class="tag">OpenCode</span>
+                            <span class="tag">Kilo Code</span>
+                            <span class="tag">Google Antigravity</span>
+                            <span class="tag">Kiro</span>
+                            <span class="tag">Cursor</span>
+                            <span class="tag">YouWare</span>
+                            <span class="tag">Zcode</span>
+                            <span class="tag">CodeBuddy IDE</span>
+                            <span class="tag">Lovable</span>
+                            <span class="tag">CatPaw</span>
+                            <span class="tag">Augment Code</span>
+                            <span class="tag">MonkeyCode</span>
+                            <span class="tag">iFlow CLI</span>
+                            <span class="tag">通义灵码</span>
+                            <span class="tag">GitHub Copilot</span>
+                            <span class="tag">Firebase Studio</span>
+                            <span class="tag">Windsurf</span>
+                            <span class="tag">Bolt.new</span>
+                            <span class="tag">InfCode</span>
+                            <span class="tag">CodeFlicker</span>
+                            <span class="tag">Clacky AI</span>
+                            <span class="tag">Replit Agent</span>
+                            <span class="tag">Warp Code</span>
+                        </div>
+                    </article>
+
+                    <article class="tool-card" style="--accent: var(--orange)">
+                        <span class="card-kicker">PPT / 汇报 / 课件</span>
+                        <h3>4. AI 幻灯片与演示工具</h3>
+                        <p>
+                            AI 幻灯片工具适合快速生成
+                            PPT、汇报材料、课程课件、图文演示和图表页。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>一键生成 PPT</li>
+                            <li>文档转演示稿</li>
+                            <li>PPT 美化排版</li>
+                            <li>生成图表页和信息图</li>
+                            <li>制作课程课件和演示脚本</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">AiPPT</span>
+                            <span class="tag">讯飞智文</span>
+                            <span class="tag">咔片 PPT</span>
+                            <span class="tag">文多多 AiPPT</span>
+                            <span class="tag">博思 AIPPT</span>
+                            <span class="tag">iSlide AIPPT</span>
+                            <span class="tag">Pi 智能 PPT</span>
+                            <span class="tag">稿定 PPT</span>
+                            <span class="tag">笔格 AIPPT</span>
+                            <span class="tag">笔灵 AIPPT</span>
+                            <span class="tag">百度文库 AI 助手</span>
+                            <span class="tag">AiPPT 插件</span>
+                            <span class="tag">Gamma</span>
+                            <span class="tag">Napkin</span>
+                            <span class="tag">Swishy</span>
+                            <span class="tag">ChartGen</span>
+                            <span class="tag">Diagrimo</span>
+                            <span class="tag">PicDoc</span>
+                            <span class="tag">Kimi PPT 助手</span>
+                            <span class="tag">夸克 PPT</span>
+                            <span class="tag">美图 AI PPT</span>
+                            <span class="tag">飞象老师</span>
+                            <span class="tag">二狗 PPT</span>
+                            <span class="tag">一点 PPT</span>
+                            <span class="tag">NarraLand</span>
+                            <span class="tag">课灵 PPT</span>
+                            <span class="tag">清言 PPT</span>
+                            <span class="tag">万兴智演</span>
+                            <span class="tag">麦当秀 MindShow</span>
+                            <span class="tag">VoxDeck</span>
+                        </div>
+                    </article>
+
+                    <article class="tool-card" style="--accent: var(--cyan)">
+                        <span class="card-kicker">Excel / 数据 / 图表</span>
+                        <h3>5. AI 表格与数据处理工具</h3>
+                        <p>
+                            AI 表格和数据处理工具适合 Excel
+                            处理、数据清洗、公式生成、图表生成和数据分析。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>生成 Excel 公式</li>
+                            <li>清洗和整理表格数据</li>
+                            <li>分析业务数据</li>
+                            <li>生成图表和数据看板</li>
+                            <li>将文本、文档或表单转为结构化数据</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">办公小浣熊</span>
+                            <span class="tag">ChatExcel</span>
+                            <span class="tag">数以轻舟 Agent</span>
+                            <span class="tag">察言观数 AskTable</span>
+                            <span class="tag">Tomoro</span>
+                            <span class="tag">Shortcut</span>
+                            <span class="tag">爱图表</span>
+                            <span class="tag">ChartinAI</span>
+                            <span class="tag">vika 维格云</span>
+                            <span class="tag">百度 GBI</span>
+                            <span class="tag">Ajelix</span>
+                            <span class="tag">Sheet+</span>
+                            <span class="tag">轻云图</span>
+                            <span class="tag">北极九章</span>
+                            <span class="tag">Formula bot</span>
+                            <span class="tag">FormX.ai</span>
+                            <span class="tag">Rows</span>
+                            <span class="tag">Excelly-AI</span>
+                            <span class="tag">SheetGod</span>
+                            <span class="tag">Excel Formularizer</span>
+                        </div>
+                    </article>
+
+                    <article class="tool-card" style="--accent: var(--pink)">
+                        <span class="card-kicker">复合任务 / 完整交付</span>
+                        <h3>6. 组合型使用场景</h3>
+                        <p>
+                            复杂工作通常不是一个工具完成，而是多个工具接力完成：先生成内容，再分析数据，最后形成汇报。
+                        </p>
+                        <strong>适合任务：</strong>
+                        <ul class="task-list">
+                            <li>从零制作汇报材料</li>
+                            <li>完成数据分析报告</li>
+                            <li>进行竞品研究</li>
+                            <li>搭建自动化办公流程</li>
+                            <li>快速生成产品原型</li>
+                        </ul>
+                        <div class="tag-list">
+                            <span class="tag">对话工具 + PPT</span>
+                            <span class="tag">数据工具 + 对话工具</span>
+                            <span class="tag">智能体 + 编程工具</span>
+                            <span class="tag">对话工具 + Agent</span>
+                            <span class="tag">数据分析 + 演示生成</span>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <section class="section" id="table">
+                <h2 class="section-title">📌 三、AI 工具选型速查表</h2>
+                <p class="section-lead">
+                    面对一个任务时，可以先在左侧找到任务场景，再选择对应的工具类型和代表工具。
+                </p>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>任务场景</th>
+                                <th>推荐工具类型</th>
+                                <th>代表工具</th>
+                                <th>适合做什么</th>
+                                <th>使用提醒</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-purple"
+                                        >写作 / 总结 / 改写</span
+                                    >
+                                </td>
+                                <td>通用对话类 AI</td>
+                                <td>
+                                    豆包、千问、Claude、Gemini、DeepSeek、Kimi、Qwen
+                                    Chat、文心一言、智谱清言
+                                </td>
+                                <td>
+                                    解释概念、生成初稿、整理提纲、改写润色、头脑风暴。
+                                </td>
+                                <td>
+                                    适合通用信息和结构化表达；敏感信息需要脱敏。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-green"
+                                        >多步骤执行</span
+                                    >
+                                </td>
+                                <td>AI 智能体</td>
+                                <td>
+                                    Manus、Genspark、扣子、Flowith、DuMate、WorkBuddy、Mavis、OpenClaw
+                                </td>
+                                <td>
+                                    资料搜集、任务拆解、自动执行、生成报告、搭建工作流。
+                                </td>
+                                <td>
+                                    关键步骤要人工确认；涉及授权、账号和数据时需谨慎。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-blue"
+                                        >编程 / 原型 / 自动化</span
+                                    >
+                                </td>
+                                <td>AI 编程工具</td>
+                                <td>
+                                    Cursor、Codex、Claude Code、GitHub
+                                    Copilot、通义灵码、Lovable、Bolt.new、Replit
+                                    Agent
+                                </td>
+                                <td>
+                                    生成代码、解释代码、修复
+                                    Bug、搭建网页、生成小工具。
+                                </td>
+                                <td>
+                                    代码必须测试；不要上传密钥、核心源码和敏感系统信息。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-orange"
+                                        >PPT / 汇报 / 课件</span
+                                    >
+                                </td>
+                                <td>AI 幻灯片工具</td>
+                                <td>
+                                    AiPPT、Gamma、讯飞智文、Kimi PPT
+                                    助手、iSlide AIPPT、Napkin、PicDoc
+                                </td>
+                                <td>
+                                    生成
+                                    PPT、文档转演示稿、制作图表页、优化版式。
+                                </td>
+                                <td>
+                                    正式使用前要检查逻辑、数据、案例和页面风格。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-cyan"
+                                        >Excel / 数据 / 图表</span
+                                    >
+                                </td>
+                                <td>AI 表格数据工具</td>
+                                <td>
+                                    办公小浣熊、ChatExcel、Formula bot、百度
+                                    GBI、爱图表、Rows、Sheet+
+                                </td>
+                                <td>
+                                    生成公式、清洗表格、分析数据、制作图表和看板。
+                                </td>
+                                <td>数据口径、公式逻辑和分析结论必须复核。</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="pill pill-pink">复杂交付</span>
+                                </td>
+                                <td>组合使用</td>
+                                <td>对话工具 + 智能体 + 数据工具 + PPT 工具</td>
+                                <td>
+                                    完成从资料、分析、写作到汇报的完整工作流。
+                                </td>
+                                <td>AI 接力完成初稿，人负责总控和最终质量。</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section" id="workflow">
+                <h2 class="section-title">
+                    🔁 四、常见工作流：多个 AI 工具接力完成任务
+                </h2>
+                <p class="section-lead">
+                    复杂任务通常可以拆成“明确目标、整理资料、生成内容、形成交付、人工复核”五个步骤。
+                </p>
+
+                <div class="workflow">
+                    <div class="step">
+                        <div class="step-no">1</div>
+                        <h3>明确目标</h3>
+                        <p>先说明任务背景、目标、受众、格式和输出要求。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-no">2</div>
+                        <h3>整理资料</h3>
+                        <p>用 AI 辅助收集、归类、提炼和结构化资料。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-no">3</div>
+                        <h3>生成初稿</h3>
+                        <p>生成文案、提纲、表格、图表、代码或页面初稿。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-no">4</div>
+                        <h3>形成交付</h3>
+                        <p>根据任务类型，输出文档、PPT、报告、表格或原型。</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-no">5</div>
+                        <h3>人工复核</h3>
+                        <p>
+                            检查事实、逻辑、数据、口径、风格、安全和合规要求。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>工作目标</th>
+                                <th>推荐组合</th>
+                                <th>流程示例</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>制作汇报材料</td>
+                                <td>通用对话工具 + PPT 工具</td>
+                                <td>
+                                    先生成汇报大纲和讲稿，再用 PPT
+                                    工具生成页面，最后人工统一风格。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>完成数据分析报告</td>
+                                <td>表格数据工具 + 通用对话工具 + PPT 工具</td>
+                                <td>
+                                    先分析数据，再归纳结论，最后生成图表和汇报页面。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>进行竞品研究</td>
+                                <td>智能体工具 + 通用对话工具</td>
+                                <td>
+                                    先搜集和整理资料，再进行对比分析，形成结构化报告。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>搭建自动化办公流程</td>
+                                <td>智能体工具 + 编程工具</td>
+                                <td>
+                                    先设计流程，再生成脚本、接口或自动化规则，并进行测试。
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>快速生成产品原型</td>
+                                <td>对话工具 + 编程工具</td>
+                                <td>
+                                    先整理需求和页面结构，再生成前端页面、交互原型或可运行
+                                    Demo。
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section class="section" id="prompts">
+                <h2 class="section-title">🧩 五、通用提示词模板</h2>
+                <p class="section-lead">
+                    提示词的核心是把背景、角色、任务、要求和输出格式说清楚。信息越明确，结果越稳定。
+                </p>
+
+                <div class="prompt-box">
+                    <div class="prompt-card">
+                        <h3>提示词结构</h3>
+                        <ul class="task-list">
+                            <li>
+                                <strong>背景：</strong>这项任务发生在什么场景？
+                            </li>
+                            <li>
+                                <strong>角色：</strong>希望 AI 扮演什么角色？
+                            </li>
+                            <li><strong>任务：</strong>具体要 AI 做什么？</li>
+                            <li>
+                                <strong>要求：</strong
+                                >风格、长度、口径、限制是什么？
+                            </li>
+                            <li>
+                                <strong>格式：</strong>用表格、清单、报告还是
+                                PPT 大纲输出？
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="prompt-card">
+                        <h3>可复制模板</h3>
+                        <div class="code-like">
+                            请你扮演【角色】。 背景：
+                            【补充业务背景、目标、受众、已有资料】 任务：
+                            请帮我完成【具体任务】。 要求： 1. 语言风格：【正式
+                            / 简洁 / 面向客户 / 面向内部同事】 2.
+                            内容重点：【重点 1、重点 2、重点 3】 3.
+                            注意事项：【不要编造数据 / 需要指出不确定信息 /
+                            需要给出建议】 输出格式： 请用【表格 / 分点清单 /
+                            报告结构 / PPT 大纲】输出。
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="section" id="tips">
+                <h2 class="section-title">🛡️ 六、AI 使用底线：提效也要可靠</h2>
+                <p class="section-lead">
+                    AI
+                    可以显著提升效率，但不能替代事实核查、专业判断、安全意识和最终责任。
+                </p>
+
+                <div class="tips-grid">
+                    <div class="tip">
+                        <div class="tip-icon">🔍</div>
+                        <h3>事实要核查</h3>
+                        <p>
+                            没有联网能力时，AI
+                            不适合判断最新事实、政策、价格和实时信息。
+                        </p>
+                    </div>
+                    <div class="tip">
+                        <div class="tip-icon">🔐</div>
+                        <h3>敏感要脱敏</h3>
+                        <p>
+                            不要直接输入客户资料、合同、财务、人事、源码和账号密钥。
+                        </p>
+                    </div>
+                    <div class="tip">
+                        <div class="tip-icon">🧪</div>
+                        <h3>结果要测试</h3>
+                        <p>
+                            代码、公式、数据分析和自动化流程必须经过人工验证。
+                        </p>
+                    </div>
+                    <div class="tip">
+                        <div class="tip-icon">🧠</div>
+                        <h3>判断在人手里</h3>
+                        <p>
+                            AI
+                            可以提高效率，但最终的业务判断、质量控制和责任仍然属于人。
+                        </p>
+                    </div>
+                </div>
+
+                <div class="quote-box">
+                    <strong>章节总结</strong>
+                    <p>
+                        写作找对话，执行找智能体；<br />
+                        代码找编程，汇报找 PPT；<br />
+                        数据找表格，复杂任务组合用；<br />
+                        AI 不必替你做完 100%，能帮你减少 30%
+                        的低价值劳动，就已经值得使用。
+                    </p>
+                </div>
+            </section>
+
+            <footer class="footer">
+                <p>AI 提效｜根据任务选择 AI 工具</p>
+            </footer>
+        </div>
+    </body>
+</html>
